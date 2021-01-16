@@ -3,6 +3,7 @@ import kivy
 import time
 import functools
 import jnius
+from plyer import tts
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.uix.image import Image
@@ -61,6 +62,16 @@ class KivyCamera(Image):
     def update(self, dt):
         ret, frame = self.capture.read()
         if ret:
+            # identifying text and putting boxes around it
+            hImg, wImg, _ = frame.shape
+            boxes = pytesseract.image_to_data(frame)
+            for z, b in enumerate(boxes.splitlines()):
+                if z != 0:
+                    b = b.split()
+                    if len(b) == 12:
+                        x, y, w, h = int(b[6]), int(b[7]), int(b[8]), int(b[9])
+                        cv2.rectangle(frame, (x, y), (w + x, h + y), (0, 0, 255), 2)
+
             # convert it to texture
             buf1 = cv2.flip(frame, 0)
             buf = buf1.tostring()
@@ -69,6 +80,16 @@ class KivyCamera(Image):
             image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
             # display image from the texture
             self.texture = image_texture
+    
+    def on_touch_down(self, touch):
+        ret, img = self.capture.read()
+        self.capture.release()
+        text = pytesseract.image_to_string(img)
+        tts.speak(message=text)
+
+
+    def on_touch_up(self, touch):
+        self.capture = cv2.VideoCapture(0)
 
 
 class CamApp(App):
