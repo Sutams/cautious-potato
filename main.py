@@ -3,7 +3,6 @@ import kivy
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.uix.image import Image
-from plyer import tts
 from kivy.graphics.texture import Texture
 from kivy.lang import builder
 
