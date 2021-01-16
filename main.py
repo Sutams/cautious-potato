@@ -3,6 +3,7 @@ import kivy
 import time
 import functools
 import jnius
+import pytesseract
 from plyer import tts
 from kivy.app import App
 from kivy.clock import Clock
