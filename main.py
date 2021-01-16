@@ -97,9 +97,9 @@ class CamApp(App):
     def build(self):
         perms = ["android.permission.CAMERA"]
         haveperms = acquire_permissions(perms)
-        
-        self.capture = cv2.VideoCapture(0)
-        self.my_camera = KivyCamera(capture=self.capture, fps=30)
+        if(check_permission(perms)):
+            self.capture = cv2.VideoCapture(0)
+            self.my_camera = KivyCamera(capture=self.capture, fps=30)
         
         return self.my_camera
 
